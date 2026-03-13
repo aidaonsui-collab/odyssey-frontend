@@ -1,6 +1,5 @@
 import { useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-
 import { navigation } from "../constants";
 import Button from "./Button";
 import MenuSvg from "../assets/MenuSvg";
@@ -23,42 +22,40 @@ const Header = () => {
 
   const handleClick = () => {
     if (!openNavigation) return;
-
     enablePageScroll();
     setOpenNavigation(false);
   };
 
   return (
-    <div
-      className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 border-gray-500 lg:bg-n-8/90 lg:backdrop-blur-sm ${
-        openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm"
-      }`}
-    >
+    <div className="fixed top-0 left-0 w-full z-50 border-b border-[#1f1f2e] bg-[#0a0a12]/95 backdrop-blur-xl">
       <style>{`
         .suiet-wallet-connect-button > button > div > svg:last-child,
         [class*="notification"],
         [data-icon*="bell"],
-        .suiet-icon-bell {
-          display: none !important;
-        }
+        .suiet-icon-bell { display: none !important; }
       `}</style>
-      <div className="flex w-full items-center justify-between px-2 lg:px-7.5 xl:px-10 max-lg:py-2" style={{ minWidth: 'max-content' }}>
-        
+      
+      <div className="flex w-full items-center justify-between px-4 lg:px-8 py-3">
         {/* Logo */}
-        <a className="block w-[12rem] xl:mr-8 flex-shrink-0" href="#hero">
-          <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            TheOdyssey.fun
+        <a className="flex items-center gap-3" href="#hero">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <span className="text-lg font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent hidden sm:block">
+            The Odyssey
           </span>
         </a>
 
         {/* Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-6 mx-8">
+        <nav className="hidden lg:flex items-center gap-1">
           {navigation.map((item) => (
             <a
               key={item.id}
               href={item.url}
               onClick={handleClick}
-              className="text-xs font-semibold text-gray-300 hover:text-white whitespace-nowrap"
+              className="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-all"
             >
               {item.title}
             </a>
@@ -66,22 +63,19 @@ const Header = () => {
         </nav>
 
         {/* Right side buttons */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-3">
           <a
             href="/create-coin"
-            className="button text-n-1/50 transition-colors hover:text-n-1 py-2 px-4 text-sm"
+            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-purple-500/25"
           >
-            Create Coin
+            <span>🚀</span>
+            Launch
           </a>
           <AuthButton />
         </div>
 
         {/* Mobile menu button */}
-        <Button
-          className="lg:hidden ml-2"
-          px="px-3"
-          onClick={toggleNavigation}
-        >
+        <Button className="lg:hidden" px="px-3" onClick={toggleNavigation}>
           <MenuSvg openNavigation={openNavigation} />
         </Button>
       </div>

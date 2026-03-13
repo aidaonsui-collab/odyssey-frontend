@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import SecondaryButton from "../components/buttons/SecondaryButton";
 import { PiPaperPlaneTilt, PiRobot } from "react-icons/pi";
 import Header from "../components/Header";
-import CardSlider from "../components/CardSlider";
 
 // Generate mock tokens with dynamic bonding curve progress
 const generateTokens = (count) => {
@@ -41,62 +40,16 @@ const generateTokens = (count) => {
   });
 };
 
-// Real TEST token from deployed contract
-const realToken = {
-  id: 999,
-  image: '/assets/coin-img/coin_img_1.jpeg',
-  name: 'TEST',
-  ca: '0x6b954abcb604a0adcacf67d0a869dda10a52ae4dc52cbcb8bbe9929449df8aaf',
-  hasStream: false,
-  marketCap: '0.00',
-  marketPercent: '+0.0%',
-  buyersPercent: '0',
-  progress: 0,
-  isBonded: false,
-  createdAt: new Date().toISOString(),
-  isReal: true,
-};
-
 const Home = () => {
   const [activeTab, setActiveTab] = useState('new');
   const [tokens, setTokens] = useState([]);
 
   useEffect(() => {
     const allTokens = generateTokens(30);
-    // Add real TEST token at the beginning
-    const testToken = {
-      id: 999,
-      image: '/assets/coin-img/coin_img_1.jpeg',
-      name: 'TEST',
-      ca: '0x6b954abcb604a0adcacf67d0a869dda10a52ae4dc52cbcb8bbe9929449df8aaf',
-      hasStream: false,
-      marketCap: '0.00',
-      marketPercent: '+0.0%',
-      buyersPercent: '0',
-      progress: 5,
-      isBonded: false,
-      createdAt: new Date().toISOString(),
-      isReal: true,
-    };
-    setTokens([testToken, ...allTokens]);
+    setTokens(allTokens);
     
     const interval = setInterval(() => {
-      const updated = generateTokens(30);
-      const testToken = {
-        id: 999,
-        image: '/assets/coin-img/coin_img_1.jpeg',
-        name: 'TEST',
-        ca: '0x6b954abcb604a0adcacf67d0a869dda10a52ae4dc52cbcb8bbe9929449df8aaf',
-        hasStream: false,
-        marketCap: '0.00',
-        marketPercent: '+0.0%',
-        buyersPercent: '0',
-        progress: 5,
-        isBonded: false,
-        createdAt: new Date().toISOString(),
-        isReal: true,
-      };
-      setTokens([testToken, ...updated]);
+      setTokens(generateTokens(30));
     }, 60000);
 
     return () => clearInterval(interval);
@@ -125,126 +78,146 @@ const Home = () => {
 
   return (
     <div className="rounded-lg">
-      {/* Hero Section */}
-      <div className="relative w-full flex flex-col items-center justify-center mb-6 rounded-sm p-3 md:p-8 bg-black md:bg-radial-[at_75%_25%] from-[#7212c7] to-[#000000] to-50%">
-        <div className="z-10 flex flex-col gap-5 md:gap-8 justify-between items-left md:items-center p-2 md:p-8 py-4 md:py-12 bg-[rgba(0,0,0,0.5)] rounded-2xl w-full">
-          
-          {/* Branding */}
-          <div className="text-center w-full mb-2">
-            <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mb-2">
-              TheOdyssey
+      {/* Hero Section - Redesigned */}
+      <div className="relative w-full mb-8 rounded-2xl overflow-hidden">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a12] via-[#12121f] to-[#0a0a12]"></div>
+        <div className="absolute inset-0 opacity-30" style={{
+          backgroundImage: `radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
+                           radial-gradient(circle at 80% 50%, rgba(6, 182, 212, 0.3) 0%, transparent 50%)`
+        }}></div>
+        
+        {/* Grid pattern */}
+        <div className="absolute inset-0 opacity-10" style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+          backgroundSize: '50px 50px'
+        }}></div>
+        
+        <div className="relative z-10 p-6 md:p-12">
+          {/* Logo & Title */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 mb-4 shadow-lg shadow-purple-500/30">
+              <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-cyan-200 to-purple-200 bg-clip-text text-transparent mb-3">
+              The Odyssey
             </h1>
-            <p className="text-gray-400 text-sm md:text-lg">
-              Sui Agentic Launchpad
+            <p className="text-lg md:text-xl text-gray-400 max-w-xl mx-auto">
+              AI Agent Launchpad on <span className="text-cyan-400 font-semibold">Sui Blockchain</span>
             </p>
           </div>
 
-          {/* Launch Options - Human & AI Agent */}
-          <div className="flex flex-col md:flex-row gap-4 w-full justify-center">
-            {/* Human Launch */}
-            <div className="flex-1 max-w-md bg-[#1a1a24]/80 rounded-xl p-4 border border-purple-500/30">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xl">👤</span>
-                <h3 className="font-semibold text-white">For Humans</h3>
+          {/* Stats Row */}
+          <div className="flex justify-center gap-8 md:gap-16 mb-8 flex-wrap">
+            {[
+              { label: 'Tokens Created', value: '2,381', color: 'text-purple-400' },
+              { label: 'Total Volume', value: '$72.5M', color: 'text-cyan-400' },
+              { label: 'Rewards Paid', value: '$7.2M', color: 'text-green-400' },
+            ].map((stat, i) => (
+              <div key={i} className="text-center">
+                <div className={`text-2xl md:text-3xl font-bold ${stat.color}`}>{stat.value}</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</div>
               </div>
-              <p className="text-gray-400 text-sm mb-3">
-                Launch your own memecoin in minutes. No coding required.
+            ))}
+          </div>
+
+          {/* Launch Options */}
+          <div className="flex flex-col md:flex-row gap-6 max-w-4xl mx-auto">
+            {/* Human Launch */}
+            <div className="flex-1 bg-[#1a1a2e]/80 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30 hover:border-purple-500/60 transition-all">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                  <span className="text-xl">👤</span>
+                </div>
+                <h3 className="text-lg font-bold text-white">For Humans</h3>
+              </div>
+              <p className="text-gray-400 text-sm mb-4">
+                Launch your own AI agent token in minutes. No coding required.
               </p>
+              <div className="text-2xl font-bold text-purple-400 mb-4">1 SUI</div>
               <SecondaryButton
-                name="Launch a Coin"
+                name="Launch Token"
                 icon={<PiPaperPlaneTilt />}
                 href="/create-coin"
-                className="text-sm p-2 px-4 w-full justify-center"
+                className="w-full justify-center"
               />
             </div>
 
             {/* AI Agent Launch */}
-            <div className="flex-1 max-w-md bg-[#1a1a24]/80 rounded-xl p-4 border border-cyan-500/30">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xl">🤖</span>
-                <h3 className="font-semibold text-white">For AI Agents</h3>
+            <div className="flex-1 bg-[#1a1a2e]/80 backdrop-blur-sm rounded-2xl p-6 border border-cyan-500/30 hover:border-cyan-500/60 transition-all">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                  <span className="text-xl">🤖</span>
+                </div>
+                <h3 className="text-lg font-bold text-white">For AI Agents</h3>
               </div>
-              <p className="text-gray-400 text-sm mb-3">
-                Autonomous agents can launch tokens programmatically via API.
+              <p className="text-gray-400 text-sm mb-4">
+                Autonomous agents can launch tokens programmatically via API - <span className="text-green-400">FREE</span>
               </p>
               
-              {/* API Endpoint Info */}
-              <div className="bg-[#0a0a0f] rounded-lg p-3 mb-3 font-mono text-xs">
-                <p className="text-cyan-400 mb-1">POST /api/v1/tokens/create</p>
-                <p className="text-gray-500">Body: {"{"}"name": "Token", "ticker": "$SYM", "image": "https://...", "apiKey": "..."{"}"}</p>
+              {/* API Code */}
+              <div className="bg-[#0a0a12] rounded-lg p-3 mb-4 font-mono text-xs overflow-hidden">
+                <p className="text-cyan-400 mb-1">POST /api/v1/tokens</p>
+                <p className="text-gray-500 truncate">{"{ name, ticker, image, apiKey }"}</p>
               </div>
               
               <a
                 href="/docs/ai-agent"
-                className="flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-all"
+                className="flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-3 px-4 rounded-xl transition-all"
               >
                 <PiRobot />
-                Full API Docs
+                API Docs
               </a>
             </div>
-          </div>
-
-          {/* API Info */}
-          <div className="w-full mt-4 p-4 bg-[#0a0a0f]/80 rounded-xl border border-cyan-500/30">
-            <p className="text-sm text-white font-semibold mb-2">
-              🤖 <span className="text-cyan-400">AI Agent API Endpoint:</span>
-            </p>
-            <p className="text-xs text-gray-400 font-mono">
-              POST https://theodyssey-backend.vercel.app/api/v1/tokens/create
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Body: {"{"}"name": "Token", "ticker": "$SYM", "image": "https://...", "apiKey": "..."{"}"}
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Full docs: <a href="/docs/ai-agent" className="text-purple-400 hover:underline">/docs/ai-agent</a>
-            </p>
           </div>
         </div>
       </div>
 
-      {/* Top 5 Trending Section */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-white">🔥 Top 5 Trending (24h Vol)</h2>
+      {/* Top Trending Section */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <span className="text-orange-500">🔥</span> Trending Tokens
+          </h2>
+          <span className="text-xs text-gray-500">By 24h Volume</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {tokens.slice(0, 5).map((token) => (
             <div
               key={token.id}
               onClick={() => window.location.href = `/coins/${token.ca}`}
-              className="bg-[#1a1a24] rounded-xl p-4 border border-[#27272a] hover:border-purple-500/50 transition-all cursor-pointer relative"
+              className="group bg-[#12121a] rounded-2xl p-4 border border-[#1f1f2e] hover:border-purple-500/50 hover:bg-[#1a1a24] transition-all cursor-pointer"
             >
-              <a 
-                href={`https://suiscan.xyz/address/${token.ca}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="absolute top-3 right-3 text-gray-500 hover:text-purple-400"
-                title="View Creator"
-              >
-                👤
-              </a>
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center justify-between mb-3">
                 <img 
                   src={token.image} 
                   alt={token.name} 
-                  className="w-12 h-12 rounded-full object-cover"
+                  className="w-12 h-12 rounded-xl object-cover ring-2 ring-[#1f1f2e] group-hover:ring-purple-500/50 transition-all"
                 />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold truncate">{token.name} {token.hasStream && <span className="text-red-500 ml-1">📺 LIVE</span>}</p>
-                  <p className="text-xs text-gray-500">${(Math.random() * 50 + 5).toFixed(0)}K vol</p>
-                </div>
+                <span className={`px-2 py-1 text-xs font-bold rounded-lg ${
+                  token.marketPercent.startsWith('+') 
+                    ? 'bg-green-500/20 text-green-400' 
+                    : 'bg-red-500/20 text-red-400'
+                }`}>
+                  {token.marketPercent}
+                </span>
               </div>
-              <div className="mt-2">
-                <div className="flex justify-between text-sm mb-2">
+              <p className="font-bold text-white truncate mb-1">{token.name}</p>
+              <p className="text-xs text-gray-500 mb-3">${token.marketCap}K MC</p>
+              
+              <div>
+                <div className="flex justify-between text-xs mb-1.5">
                   <span className="text-gray-500">Curve</span>
                   <span className={token.isBonded ? "text-green-400 font-semibold" : "text-purple-400 font-semibold"}>
                     {token.progress.toFixed(0)}%
                   </span>
                 </div>
-                <div className="h-3 bg-[#27272a] rounded-full overflow-hidden">
+                <div className="h-2 bg-[#1f1f2e] rounded-full overflow-hidden">
                   <div 
-                    className={`h-full bg-gradient-to-r ${getProgressColor(token.progress)}`}
+                    className={`h-full bg-gradient-to-r ${getProgressColor(token.progress)} rounded-full`}
                     style={{ width: `${Math.min(100, token.progress)}%` }}
                   />
                 </div>
@@ -254,88 +227,51 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Tabs Section */}
-      <div className="mb-4">
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-2">
-          <button
-            onClick={() => setActiveTab('new')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-              activeTab === 'new' 
-                ? 'bg-purple-600 text-white' 
-                : 'bg-[#1a1a24] text-gray-400 hover:text-white'
-            }`}
-          >
-            🆕 New Coins
-          </button>
-          <button
-            onClick={() => setActiveTab('near')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-              activeTab === 'near' 
-                ? 'bg-yellow-600 text-white' 
-                : 'bg-[#1a1a24] text-gray-400 hover:text-white'
-            }`}
-          >
-            🔥 Near Bonding ({'>'}50%)
-          </button>
-          <button
-            onClick={() => setActiveTab('bonded')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-              activeTab === 'bonded' 
-                ? 'bg-green-600 text-white' 
-                : 'bg-[#1a1a24] text-gray-400 hover:text-white'
-            }`}
-          >
-            🎯 Bonded
-          </button>
+      {/* Filter Tabs */}
+      <div className="mb-6">
+        <div className="flex gap-3 mb-4 overflow-x-auto pb-2">
+          {[
+            { id: 'new', label: '🆕 New', color: 'purple' },
+            { id: 'near', label: '🔥 Near Graduation', color: 'yellow' },
+            { id: 'bonded', label: '🎯 Graduated', color: 'green' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
+                activeTab === tab.id 
+                  ? `bg-${tab.color}-600 text-white shadow-lg shadow-${tab.color}-500/30` 
+                  : 'bg-[#12121a] text-gray-400 hover:text-white border border-[#1f1f2e]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-          {filteredTokens.slice(0, 5).map((token) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {filteredTokens.slice(0, 6).map((token) => (
             <div
               key={token.id}
               onClick={() => window.location.href = `/coins/${token.ca}`}
-              className="bg-[#1a1a24] rounded-xl p-4 border border-[#27272a] hover:border-purple-500/50 transition-all cursor-pointer relative"
+              className="group bg-[#12121a] rounded-xl p-3 border border-[#1f1f2e] hover:border-purple-500/40 hover:bg-[#1a1a24] transition-all cursor-pointer"
             >
-              <a 
-                href={`https://suiscan.xyz/address/${token.ca}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="absolute top-3 right-3 text-gray-500 hover:text-purple-400"
-                title="View Creator"
-              >
-                👤
-              </a>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2 mb-2">
                 <img 
                   src={token.image} 
                   alt={token.name} 
-                  className="w-12 h-12 rounded-full object-cover"
+                  className="w-8 h-8 rounded-lg object-cover"
                 />
-                {token.isBonded ? (
-                  <span className="text-xl">🎯</span>
-                ) : (
-                  <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">
-                    LIVE
-                  </span>
-                )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-white truncate">{token.name}</p>
+                  <p className="text-xs text-gray-500">${token.marketCap}K</p>
+                </div>
               </div>
-              <p className="font-semibold text-sm truncate">{token.name} {token.hasStream && <span className="text-red-500 ml-1">📺 LIVE</span>}</p>
-              <p className="text-xs text-gray-500 mb-3">${token.marketCap}K</p>
-              
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-500">Curve</span>
-                  <span className={token.isBonded ? "text-green-400 font-semibold" : "text-purple-400 font-semibold"}>
-                    {token.progress < 100 ? `${token.progress.toFixed(0)}%` : '100%'}
-                  </span>
-                </div>
-                <div className="h-3 bg-[#27272a] rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full bg-gradient-to-r ${getProgressColor(token.progress)}`}
-                    style={{ width: `${Math.min(100, token.progress)}%` }}
-                  />
-                </div>
+              <div className="h-1.5 bg-[#1f1f2e] rounded-full overflow-hidden">
+                <div 
+                  className={`h-full bg-gradient-to-r ${getProgressColor(token.progress)} rounded-full`}
+                  style={{ width: `${Math.min(100, token.progress)}%` }}
+                />
               </div>
             </div>
           ))}
