@@ -35,11 +35,19 @@ export default function Home() {
   const fmt = (n: number) => n >= 1e6 ? `$${(n/1e6).toFixed(1)}M` : n >= 1e3 ? `$${Math.round(n/1e3)}K` : `$${n}`;
 
   useEffect(() => {
+    // Check for wallet periodically
+    const checkWallet = setInterval(() => {
+      console.log("Checking for wallet...", Object.keys(window).filter(k => k.toLowerCase().includes("sui") || k.toLowerCase().includes("wallet")));
+    }, 2000);
+    return () => clearInterval(checkWallet);
+  }, []);
+
+  useEffect(() => {
     const saved = localStorage.getItem('wallet');
     if (saved) setWallet(saved);
   }, []);
 
-  const connectWallet = async () => { alert('Connecting...'); console.log('Connecting, window keys:', Object.keys(window).filter(k => k.toLowerCase().includes('sui') || k.toLowerCase().includes('wallet') || k.toLowerCase().includes('slush')));
+  const connectWallet = async () => { alert('Connecting...'); console.log('ALL window keys:', Object.keys(window).slice(0,50));
     if ((window as any).slushWallet) {
       try {
         await (window as any).slushWallet.connect();
