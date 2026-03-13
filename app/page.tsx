@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { WalletProvider, useWallet } from '@suiet/wallet-kit';
-import { SuiClientProvider, getFullnodeUrl } from '@mysten/dapp-kit';
+import { SuiClientProvider } from '@mysten/dapp-kit';
+import { getFullnodeUrl } from '@mysten/sui/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 interface Token {
@@ -20,22 +21,19 @@ interface Token {
 }
 
 const networks = {
-  mainnet: { url: getFullnodeUrl('mainnet') },
   devnet: { url: getFullnodeUrl('devnet') },
+  mainnet: { url: getFullnodeUrl('mainnet') },
 };
 
 const queryClient = new QueryClient();
 
 function WalletButton() {
-  const { connected, account, connect, disconnect } = useWallet();
+  const { connected, account, select, disconnect } = useWallet();
   const [showModal, setShowModal] = useState(false);
 
-  const handleConnect = async (walletName?: string) => {
-    try {
-      await connect(walletName as any);
-    } catch (e) {
-      console.error('Connect error:', e);
-    }
+  const handleConnect = async () => {
+    // Open wallet selection modal
+    setShowModal(true);
   };
 
   if (connected && account) {
@@ -60,7 +58,7 @@ function WalletButton() {
 
   return (
     <button 
-      onClick={() => setShowModal(!showModal)}
+      onClick={handleConnect}
       style={{
         background: 'linear-gradient(135deg, #00d4ff, #0099cc)',
         color: '#000',
@@ -114,7 +112,7 @@ function MainApp() {
               { id: 'stake', label: 'Stake' },
             ].map(p => (
               <button key={p.id} onClick={() => setPage(p.id)} style={{
-                padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+                padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 500, cursor: 'pointer',
                 background: page === p.id ? 'rgba(0,212,255,0.1)' : 'transparent',
                 color: page === p.id ? '#00d4ff' : '#9ca3af',
                 border: page === p.id ? '1px solid rgba(0,212,255,0.3)' : '1px solid transparent'
@@ -302,7 +300,7 @@ function MainApp() {
 export default function Home() {
   return (
     <QueryClientProvider client={queryClient}>
-      <SuiClientProvider networks={networks} defaultNetwork="mainnet">
+      <SuiClientProvider networks={networks} defaultNetwork="devnet">
         <WalletProvider>
           <MainApp />
         </WalletProvider>
