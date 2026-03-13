@@ -34,14 +34,12 @@ export default function Home() {
 
   const fmt = (n: number) => n >= 1e6 ? `$${(n/1e6).toFixed(1)}M` : n >= 1e3 ? `$${Math.round(n/1e3)}K` : `$${n}`;
 
-  // Wallet connection
   useEffect(() => {
     const saved = localStorage.getItem('wallet');
     if (saved) setWallet(saved);
   }, []);
 
   const connectWallet = async () => {
-    // Try Slush Wallet
     if ((window as any).slushWallet) {
       try {
         await (window as any).slushWallet.connect();
@@ -53,8 +51,6 @@ export default function Home() {
         }
       } catch(e) { console.log('Slush error:', e); }
     }
-    
-    // Try Sui Wallet
     if ((window as any).suiWallet) {
       try {
         await (window as any).suiWallet.connect();
@@ -66,113 +62,222 @@ export default function Home() {
         }
       } catch(e) { console.log('Sui error:', e); }
     }
-    
     alert('No wallet found. Please install Slush Wallet or Sui Wallet.');
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: 'white', fontFamily: 'Inter, system-ui, sans-serif' }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-lg border-b border-[#27272a]">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <header style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(10,10,10,0.95)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #1f1f23' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div style={{ width: 44, height: 44, background: 'linear-gradient(135deg, #00d4ff, #0099cc)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 30px rgba(0,212,255,0.3)' }}>
+              <svg width={24} height={24} fill="#000" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-white bg-clip-text text-transparent">The Odyssey</h1>
-              <p className="text-xs text-gray-500">AI Agent Launchpad</p>
+              <div style={{ fontSize: 22, fontWeight: 700, background: 'linear-gradient(90deg, #00d4ff, #fff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>The Odyssey</div>
+              <div style={{ fontSize: 10, color: '#6b7280', letterSpacing: 1 }}>AI Agent Launchpad</div>
             </div>
           </div>
           
-          <nav className="hidden md:flex items-center gap-2">
-            {['home','stats','stake','portfolio'].map(p => (
-              <button key={p} onClick={() => setPage(p)} className={`px-4 py-2 rounded-lg text-sm font-medium transition ${page === p ? 'bg-cyan-400/10 text-cyan-400 border border-cyan-400/30' : 'text-gray-400 hover:text-white'}`}>
-                {p.charAt(0).toUpperCase() + p.slice(1)}
+          <nav style={{ display: 'flex', gap: 4 }}>
+            {[
+              { id: 'home', label: 'Home' },
+              { id: 'create', label: 'Create' },
+              { id: 'stats', label: 'Stats' },
+              { id: 'stake', label: 'Stake' },
+            ].map(p => (
+              <button key={p.id} onClick={() => setPage(p.id)} style={{
+                padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 500, cursor: 'pointer',
+                background: page === p.id ? 'rgba(0,212,255,0.1)' : 'transparent',
+                color: page === p.id ? '#00d4ff' : '#9ca3af',
+                border: page === p.id ? '1px solid rgba(0,212,255,0.3)' : '1px solid transparent'
+              }}>
+                {p.label}
               </button>
             ))}
           </nav>
           
-          <button onClick={connectWallet} className="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold px-4 py-2 rounded-lg text-sm">
+          <button onClick={connectWallet} style={{
+            background: 'linear-gradient(135deg, #00d4ff, #0099cc)', color: '#000', fontWeight: 600, padding: '10px 20px', 
+            borderRadius: 10, cursor: 'pointer', fontSize: 14
+          }}>
             {wallet ? `${wallet.slice(0,6)}...${wallet.slice(-4)}` : 'Connect Wallet'}
           </button>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8 pb-20">
+      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px 100px' }}>
         {page === 'home' && (
           <div>
             {/* Hero */}
-            <div className="text-center py-16">
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                <span className="bg-gradient-to-r from-cyan-400 to-white bg-clip-text text-transparent">Launch Your</span>
-                <br />AI Agent Token
-              </h1>
-              <p className="text-gray-400 text-lg max-w-xl mx-auto mb-8">
-                The first decentralized platform where AI agents create, trade, and build autonomous capital on Sui.
-              </p>
-              <div className="flex justify-center gap-4">
-                <button className="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold px-8 py-3 rounded-xl">Launch Token</button>
-                <button className="border border-gray-700 px-8 py-3 rounded-xl">API Docs</button>
+            <div style={{ padding: '100px 0 60px', textAlign: 'center', position: 'relative' }}>
+              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.15) 0%, transparent 60%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'relative' }}>
+                <div style={{ fontSize: 56, fontWeight: 800, marginBottom: 20, lineHeight: 1.1 }}>
+                  <span style={{ background: 'linear-gradient(90deg, #00d4ff, #fff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Launch Your</span>
+                  <br />
+                  <span style={{ color: 'white' }}>AI Agent Token</span>
+                </div>
+                <p style={{ fontSize: 18, color: '#9ca3af', maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.6 }}>
+                  The first decentralized platform where AI agents create, trade, and build autonomous capital on Sui blockchain.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginBottom: 48 }}>
+                  <button style={{ background: 'linear-gradient(135deg, #00d4ff, #0099cc)', color: '#000', fontWeight: 600, padding: '14px 32px', borderRadius: 12, cursor: 'pointer', fontSize: 16 }}>
+                    🚀 Launch Token
+                  </button>
+                  <button style={{ background: 'transparent', color: '#fff', fontWeight: 500, padding: '14px 32px', borderRadius: 12, border: '1px solid #3f3f46', cursor: 'pointer', fontSize: 16 }}>
+                    📖 Read Docs
+                  </button>
+                </div>
+                
+                {/* Stats */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 48, maxWidth: 600, margin: '0 auto' }}>
+                  {[
+                    { label: 'Tokens Created', value: '2,381' },
+                    { label: 'Total Volume', value: '$72.5M' },
+                    { label: 'Rewards Paid', value: '$7.2M' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 28, fontWeight: 700, color: '#00d4ff' }}>{s.value}</div>
+                      <div style={{ fontSize: 13, color: '#6b7280' }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-              {[
-                { label: 'Tokens Created', value: '2,381', icon: '🪙' },
-                { label: 'Total Volume', value: '$72.5M', icon: '📊' },
-                { label: '24h Volume', value: '$46.3M', icon: '📈' },
-                { label: 'Rewards Paid', value: '$7.2M', icon: '🎁' },
-              ].map((s, i) => (
-                <div key={i} className="bg-[#161616] border border-[#27272a] rounded-xl p-5 hover:border-cyan-400/50 transition">
-                  <div className="text-2xl mb-2">{s.icon}</div>
-                  <div className="text-2xl font-bold text-cyan-400">{s.value}</div>
-                  <div className="text-xs text-gray-500">{s.label}</div>
-                </div>
-              ))}
+            {/* AI Banner */}
+            <div style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.1), rgba(0,212,255,0.05))', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 20, padding: 32, marginBottom: 48, textAlign: 'center' }}>
+              <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: '#a855f7' }}>🤖 AI Agents Launch Free!</div>
+              <p style={{ fontSize: 14, color: '#9ca3af', marginBottom: 16 }}>Autonomous AI agents can create tokens at no cost using our API. Build your trading capital today!</p>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap' }}>
+                {['✓ Free token creation', '✓ Programmatic trading', '✓ Autonomous treasury', '✓ 24/7 trading'].map((f, i) => (
+                  <div key={i} style={{ fontSize: 13, color: '#22c55e' }}>{f}</div>
+                ))}
+              </div>
             </div>
             
             {/* Tokens */}
-            <h2 className="text-2xl font-bold mb-6">🔥 Trending Tokens</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+              <h2 style={{ fontSize: 24, fontWeight: 700 }}>🔥 Trending Tokens</h2>
+              <button style={{ color: '#00d4ff', background: 'none', cursor: 'pointer', fontSize: 14 }}>View All →</button>
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(340px,1fr))', gap: 20 }}>
               {tokens.map(t => (
-                <div key={t.id} className="bg-[#161616] border border-[#27272a] rounded-2xl p-5 hover:border-cyan-400/50 transition cursor-pointer hover:-translate-y-1">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-2xl">{t.pfp}</div>
-                    <div>
-                      <div className="font-semibold">{t.name}</div>
-                      <div className="text-cyan-400 font-mono text-sm">{t.symbol}</div>
+                <div key={t.id} style={{ background: '#141418', border: '1px solid #1f1f23', borderRadius: 20, padding: 24, transition: 'all 0.3s', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 30% 30%, rgba(0,212,255,0.08), transparent 70%)', opacity: 0, transition: 'opacity 0.3s' }} className="card-hover" />
+                  <div style={{ position: 'relative' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+                      <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'linear-gradient(135deg, #1f1f23, #27272d)', border: '2px solid #27272d', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>{t.pfp}</div>
+                      <div>
+                        <div style={{ fontSize: 17, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>{t.name}
+                          {t.graduated && <span style={{ background: 'linear-gradient(90deg, #00d4ff, #00ffaa)', color: '#000', padding: '2px 8px', borderRadius: 4, fontSize: 10, fontWeight: 700 }}>GRADUATED</span>}
+                        </div>
+                        <div style={{ fontSize: 14, color: '#00d4ff', fontFamily: 'monospace' }}>{t.symbol}</div>
+                      </div>
                     </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+                      <div>
+                        <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>Market Cap</div>
+                        <div style={{ fontSize: 16, fontWeight: 600 }}>{fmt(t.mc)}</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>24h Change</div>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: t.change >= 0 ? '#22c55e' : '#ef4444' }}>{t.change >= 0 ? '+' : ''}{t.change}%</div>
+                      </div>
+                    </div>
+                    
+                    <div style={{ marginBottom: 16 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#6b7280', marginBottom: 8 }}>
+                        <span>Bonding Curve</span>
+                        <span>{t.curve}%</span>
+                      </div>
+                      <div style={{ height: 6, background: '#1f1f23', borderRadius: 3, overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${t.curve}%`, background: 'linear-gradient(90deg, #00d4ff, #00ffaa)', borderRadius: 3 }} />
+                      </div>
+                    </div>
+                    
+                    <button style={{ width: '100%', background: '#22c55e', color: 'white', fontWeight: 600, padding: '12px', borderRadius: 10, cursor: 'pointer', fontSize: 14 }}>
+                      Buy {t.symbol}
+                    </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-                    <div><span className="text-gray-500">MC</span><div className="font-semibold">{fmt(t.mc)}</div></div>
-                    <div><span className="text-gray-500">24h</span><div className={`font-semibold ${t.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>{t.change >= 0 ? '+' : ''}{t.change}%</div></div>
-                  </div>
-                  <div className="mb-3">
-                    <div className="flex justify-between text-xs text-gray-500 mb-1"><span>Bonding Curve</span><span>{t.curve}%</span></div>
-                    <div className="h-2 bg-[#27272a] rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-cyan-400 to-cyan-300" style={{width: `${t.curve}%`}} /></div>
-                  </div>
-                  <button className="w-full bg-green-500 text-white py-2 rounded-lg font-medium">Buy</button>
                 </div>
               ))}
             </div>
           </div>
         )}
 
+        {page === 'create' && (
+          <div style={{ maxWidth: 500, margin: '0 auto', paddingTop: 40 }}>
+            <h1 style={{ fontSize: 32, fontWeight: 700, marginBottom: 8, textAlign: 'center' }}>🚀 Launch Token</h1>
+            <p style={{ color: '#9ca3af', marginBottom: 32, textAlign: 'center' }}>Create your AI agent token in seconds</p>
+            
+            <div style={{ background: '#141418', border: '1px solid #1f1f23', borderRadius: 20, padding: 32 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+                <div>
+                  <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 8 }}>Token Name *</div>
+                  <input type="text" placeholder="My AI Agent" style={{ width: '100%', padding: '14px 16px', background: '#0a0a0c', border: '1px solid #27272d', borderRadius: 10, color: 'white', fontSize: 15 }} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 8 }}>Ticker *</div>
+                  <input type="text" placeholder="$AGENT" style={{ width: '100%', padding: '14px 16px', background: '#0a0a0c', border: '1px solid #27272d', borderRadius: 10, color: 'white', fontSize: 15 }} />
+                </div>
+              </div>
+              
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 8 }}>Description</div>
+                <textarea rows={3} placeholder="Describe your AI agent..." style={{ width: '100%', padding: '14px 16px', background: '#0a0a0c', border: '1px solid #27272d', borderRadius: 10, color: 'white', fontSize: 15, resize: 'none' }} />
+              </div>
+              
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 8 }}>Image URL</div>
+                <input type="url" placeholder="https://..." style={{ width: '100%', padding: '14px 16px', background: '#0a0a0c', border: '1px solid #27272d', borderRadius: 10, color: 'white', fontSize: 15 }} />
+              </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+                <div>
+                  <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 8 }}>X (Twitter)</div>
+                  <input type="text" placeholder="@username" style={{ width: '100%', padding: '14px 16px', background: '#0a0a0c', border: '1px solid #27272d', borderRadius: 10, color: 'white', fontSize: 15 }} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 8 }}>Telegram</div>
+                  <input type="text" placeholder="@username" style={{ width: '100%', padding: '14px 16px', background: '#0a0a0c', border: '1px solid #27272d', borderRadius: 10, color: 'white', fontSize: 15 }} />
+                </div>
+              </div>
+              
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 8 }}>DEX</div>
+                <select style={{ width: '100%', padding: '14px 16px', background: '#0a0a0c', border: '1px solid #27272d', borderRadius: 10, color: 'white', fontSize: 15 }}>
+                  <option>Cetus</option>
+                  <option>Turbos</option>
+                </select>
+              </div>
+              
+              <button style={{ width: '100%', background: 'linear-gradient(135deg, #00d4ff, #0099cc)', color: '#000', fontWeight: 600, padding: '16px', borderRadius: 12, cursor: 'pointer', fontSize: 16 }}>
+                🚀 Launch Token (1 SUI)
+              </button>
+              <div style={{ textAlign: 'center', marginTop: 12, fontSize: 12, color: '#6b7280' }}>🤖 AI Agents: Free via API</div>
+            </div>
+          </div>
+        )}
+
         {page === 'stats' && (
-          <div>
-            <h1 className="text-3xl font-bold mb-8">📊 Platform Statistics</h1>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div style={{ paddingTop: 40 }}>
+            <h1 style={{ fontSize: 32, fontWeight: 700, marginBottom: 32 }}>📊 Platform Stats</h1>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 40 }}>
               {[
-                { label: 'Tokens Created', value: '2,381' },
-                { label: 'Total Volume', value: '$72.5M' },
-                { label: '24h Volume', value: '$46.3M' },
-                { label: 'Rewards Paid', value: '$7.2M' },
+                { label: 'Tokens Created', value: '2,381', icon: '🪙' },
+                { label: 'Total Volume', value: '$72.5M', icon: '📈' },
+                { label: '24h Volume', value: '$46.3M', icon: '📊' },
+                { label: 'Rewards Paid', value: '$7.2M', icon: '🎁' },
               ].map((s, i) => (
-                <div key={i} className="bg-[#161616] border border-[#27272a] rounded-xl p-5">
-                  <div className="text-2xl font-bold text-cyan-400">{s.value}</div>
-                  <div className="text-sm text-gray-500">{s.label}</div>
+                <div key={i} style={{ background: '#141418', border: '1px solid #1f1f23', borderRadius: 16, padding: 24, textAlign: 'center' }}>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>{s.icon}</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: '#00d4ff', marginBottom: 4 }}>{s.value}</div>
+                  <div style={{ fontSize: 13, color: '#6b7280' }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -180,56 +285,53 @@ export default function Home() {
         )}
 
         {page === 'stake' && (
-          <div>
-            <h1 className="text-3xl font-bold mb-8">💰 Stake $AIDA</h1>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div style={{ paddingTop: 40 }}>
+            <h1 style={{ fontSize: 32, fontWeight: 700, marginBottom: 32, textAlign: 'center' }}>💰 Stake $AIDA</h1>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 40 }}>
               {[
                 { label: 'Total Staked', value: '2.4M' },
                 { label: 'APY', value: '24.5%' },
                 { label: 'Your Share', value: '0.0%' },
                 { label: 'Pool Rewards', value: '$45.2K' },
               ].map((s, i) => (
-                <div key={i} className="bg-[#161616] border border-[#27272a] rounded-xl p-5">
-                  <div className="text-2xl font-bold text-cyan-400">{s.value}</div>
-                  <div className="text-sm text-gray-500">{s.label}</div>
+                <div key={i} style={{ background: '#141418', border: '1px solid #1f1f23', borderRadius: 16, padding: 24, textAlign: 'center' }}>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: '#00d4ff', marginBottom: 4 }}>{s.value}</div>
+                  <div style={{ fontSize: 13, color: '#6b7280' }}>{s.label}</div>
                 </div>
               ))}
             </div>
-            <div className="bg-[#161616] border border-[#27272a] rounded-2xl p-6 max-w-md mx-auto">
-              <h3 className="text-xl font-bold mb-4">Stake $AIDA</h3>
-              <input type="number" placeholder="Amount" className="w-full bg-[#27272a] border border-[#3a3a42] rounded-lg px-4 py-3 mb-4" />
-              <button className="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold py-3 rounded-lg">Stake</button>
+            
+            <div style={{ maxWidth: 400, margin: '0 auto', background: '#141418', border: '1px solid #1f1f23', borderRadius: 20, padding: 32 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 20, textAlign: 'center' }}>Stake $AIDA</h3>
+              <input type="number" placeholder="Amount" style={{ width: '100%', padding: '14px 16px', background: '#0a0a0c', border: '1px solid #27272d', borderRadius: 10, color: 'white', fontSize: 15, marginBottom: 16 }} />
+              <button style={{ width: '100%', background: 'linear-gradient(135deg, #00d4ff, #0099cc)', color: '#000', fontWeight: 600, padding: '16px', borderRadius: 12, cursor: 'pointer', fontSize: 16 }}>
+                Stake $AIDA
+              </button>
             </div>
-          </div>
-        )}
-
-        {page === 'portfolio' && (
-          <div>
-            <h1 className="text-3xl font-bold mb-8">💼 Your Portfolio</h1>
-            {wallet ? (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">👛</div>
-                <p className="text-gray-400">No tokens found</p>
-              </div>
-            ) : (
-              <div className="text-center py-12 bg-[#161616] border border-[#27272a] rounded-2xl">
-                <div className="text-6xl mb-4">🔗</div>
-                <p className="text-gray-400 mb-4">Connect your wallet to view portfolio</p>
-                <button onClick={connectWallet} className="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold px-6 py-3 rounded-lg">Connect Wallet</button>
-              </div>
-            )}
           </div>
         )}
       </main>
 
       {/* Mobile Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0a0a0a]/95 border-t border-[#27272a] px-4 py-3 flex justify-around">
-        {['home','stats','stake','portfolio'].map(p => (
-          <button key={p} onClick={() => setPage(p)} className={`text-xs ${page === p ? 'text-cyan-400' : 'text-gray-500'}`}>
-            {p === 'home' ? '🏠' : p === 'stats' ? '📊' : p === 'stake' ? '💰' : '💼'}
+      <nav style={{ display: 'none', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(10,10,10,0.95)', borderTop: '1px solid #1f1f23', padding: '12px 0', justifyContent: 'space-around', zIndex: 100 }} className="mobile-nav">
+        {[
+          { id: 'home', icon: '🏠' },
+          { id: 'create', icon: '🚀' },
+          { id: 'stats', icon: '📊' },
+          { id: 'stake', icon: '💰' },
+        ].map(p => (
+          <button key={p.id} onClick={() => setPage(p.id)} style={{ background: 'none', border: 'none', color: page === p.id ? '#00d4ff' : '#6b7280', cursor: 'pointer', fontSize: 12 }}>
+            {p.icon}
           </button>
         ))}
       </nav>
+      
+      <style>{`
+        @media (max-width: 768px) {
+          .mobile-nav { display: flex !important; }
+          main { padding-bottom: 80px; }
+        }
+      `}</style>
     </div>
   );
 }
