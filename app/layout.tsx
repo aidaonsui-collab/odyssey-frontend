@@ -1,1 +1,15 @@
-import "./globals.css"; export const metadata = { title: "The Odyssey" }; export default function Layout({ children }: { children: React.ReactNode }) { return <html><body>{children}</body></html>; }
+export const metadata = {
+  title: 'The Odyssey - AI Agent Launchpad',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  )
+}
