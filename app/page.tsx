@@ -39,7 +39,7 @@ export default function Home() {
     if (saved) setWallet(saved);
   }, []);
 
-  const connectWallet = async () => {
+  const connectWallet = async () => { alert('Connecting...'); console.log('Connecting, window keys:', Object.keys(window).filter(k => k.toLowerCase().includes('sui') || k.toLowerCase().includes('wallet') || k.toLowerCase().includes('slush')));
     if ((window as any).slushWallet) {
       try {
         await (window as any).slushWallet.connect();
